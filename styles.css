@@ -49,3 +49,23 @@ body {
     font-size: 24px;
     color: #ffd700; /* Set the color of the filled star */
 }
+.rating {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating label {
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  background-image: url('path/to/star-icon.png');
+  background-size: cover;
+}
+
+.rating input:checked + label {
+  background-image: url(.png');
+}
