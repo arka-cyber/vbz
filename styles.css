@@ -39,3 +39,13 @@ body {
 .star.filled {
     background-color: #ffcc00;
 }
+.rating {
+    display: inline-block;
+    font-size: 0; /* Remove white space between inline-block elements */
+}
+
+.rating::before {
+    content: '★';
+    font-size: 24px;
+    color: #ffd700; /* Set the color of the filled star */
+}
