@@ -19,3 +19,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let ratings = document.querySelectorAll(".rating");
+
+        ratings.forEach(function (rating) {
+            let ratingValue = rating.getAttribute("data-rating");
+            setRating(rating, ratingValue);
+        });
+
+        function setRating(element, rating) {
+            let stars = "";
+            for (let i = 1; i <= 5; i++) {
+                stars += i <= rating ? "★" : "☆";
+            }
+            element.innerHTML = stars;
+        }
+    });
+</script>
