@@ -4,30 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Contact Form</title>
+    <title>Contact Button Example</title>
 </head>
 <body>
 
-<div class="contact-container">
-    <h2>Contact Us</h2>
-    <form id="contactForm">
-        <label for="name">Your Name:</label>
+<button id="contactButton">Contact Us</button>
+
+<div id="contactForm">
+    <form>
+        <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
 
-        <label for="email">Your Email:</label>
+        <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
 
-        <label for="message">Your Message:</label>
+        <label for="message">Message:</label>
         <textarea id="message" name="message" rows="4" required></textarea>
 
-        <button type="button" onclick="submitForm()">Submit</button>
+        <label>Connect with:</label>
+        <input type="checkbox" id="connectFacebook" name="connectFacebook">
+        <label for="connectFacebook">Connect with Facebook</label>
+
+        <input type="checkbox" id="connectGmail" name="connectGmail">
+        <label for="connectGmail">Connect with Gmail</label>
+
+        <button type="submit">Send Message</button>
     </form>
-    <div class="social-buttons">
-        <button onclick="connectWithFacebook()">Connect with Facebook</button>
-        <button onclick="connectWithGmail()">Connect with Gmail</button>
-    </div>
 </div>
+
+
 
 <script src="script.js"></script>
 </body>
 </html>
+
