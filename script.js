@@ -37,3 +37,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 </script>
+<script>
+  const ratingInputs = document.querySelectorAll('.rating input');
+  const ratingValueDisplay = document.getElementById('rating-value'); // Optional, replace with your element ID
+
+  ratingInputs.forEach(input => {
+    input.addEventListener('change', () => {
+      const selectedRating = input.value;
+      // Optional: Display the selected rating to the user
+      if (ratingValueDisplay) {
+        ratingValueDisplay.innerText = `Selected Rating: ${selectedRating} stars`;
+      }
+    });
+  });
+</script>
