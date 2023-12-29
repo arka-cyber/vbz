@@ -9,9 +9,33 @@ body {
     background-color: #f5f5f5;
 }
 
-#contactForm {
-    max-width: 400px;
+.review-container {
+    max-width: 600px;
     width: 100%;
-    display: none;
-    /* Add more styles based on your design preferences */
+}
+
+.review {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.rating {
+    font-size: 0; /* Remove whitespace between inline-block elements */
+}
+
+.star {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #ddd;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.star.filled {
+    background-color: #ffcc00;
 }
