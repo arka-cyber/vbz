@@ -1,11 +1,12 @@
-<script>
-  const rating = document.getElementsByName('rating');
-  let selectedRating;
+  <script>
+    const ratingInputs = document.querySelectorAll('.rating input');
+    let selectedRating = 0;
 
-  for (let i = 0; i < rating.length; i++) {
-    rating[i].addEventListener('change', function() {
-      selectedRating = this.value;
-      // Submit the selected rating to the server
+    ratingInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        selectedRating = input.value;
+        console.log('Selected Rating:', selectedRating);
+        // You can use the selectedRating variable for further processing
+      });
     });
-  }
-</script>
+  </script>
