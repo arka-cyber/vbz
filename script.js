@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         board.appendChild(cell);
       }
     }
-  }
+   }
 
   function handleCellClick(event) {
     const { row, col } = event.target.dataset;
