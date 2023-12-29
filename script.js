@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const gridSize = 6;
   let currentPlayer = 'Arka'; // Arka is the first player (robot)
   let gameBoard = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => ''));
-  let gameActive = true;
+   let gameActive = true;
 
   function checkWinner() {
     // Implementing winning combinations for a 6x6 board is similar to the 3x3 case
