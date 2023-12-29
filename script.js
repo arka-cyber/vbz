@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
       currentPlayer = 'Arka'; // Switch to Arka after user's move
       handleRobotMove(); // Arka's move
     }
-  }
+   }
 
   cells.forEach((cell, index) => {
     const row = Math.floor(index / gridSize);
