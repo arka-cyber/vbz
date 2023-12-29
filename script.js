@@ -1,118 +1,163 @@
 document.addEventListener('DOMContentLoaded', () => {
   const board = document.getElementById('game-board');
   const statusMessage = document.getElementById('status-message');
+  const playerNameInput = document.getElementById('player-name');
+  const startGameButton = document.getElementById('start-game');
   const playerScoreDisplay = document.getElementById('player-score');
   const arkaScoreDisplay = document.getElementById('arka-score');
+  const leaderboard = document.getElementById('leaderboard');
 
-  const player1 = 'Arka';
-  const player2 = 'You';
-  let currentPlayer = player2;
+  let currentPlayer = '';
   let playerScore = 0;
   let arkaScore = 0;
+  let playerWins = 0;
+  let arkaWins = 0;
+  let playerLeaderboard = [];
 
-  const boardState = Array(6).fill().map(() => Array(6).fill(''));
+  let boardState = [];
+
+  function initializeGame() {
+    const playerName = playerNameInput.value.trim();
+
+    if (playerName === '') {
+      alert('Please enter your name to start the game.');
+      return;
+    }
+
+    currentPlayer = playerName;
+    playerScore = 0;
+    arkaScore = 0;
+    playerWins = 0;
+    arkaWins = 0;
+    playerLeaderboard = [];
+
+    updateScores();
+    updateLeaderboard();
+    resetGame();
+  }
+
+  startGameButton.addEventListener('click', initializeGame);
+
+  function resetGame() {
+    boardState = Array.from({ length: 7 }, () => Array(7).fill(''));
+    renderBoard();
+    displayCurrentPlayer();
+    board.addEventListener('click', handleCellClick);
+  }
 
   function renderBoard() {
     board.innerHTML = '';
 
-    for (let row = 0; row < 6; row++) {
-      for (let col = 0; col < 6; col++) {
+    for (let row = 0; row < 7; row++) {
+      for (let col = 0; col < 7; col++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
         cell.dataset.row = row;
         cell.dataset.col = col;
         cell.textContent = boardState[row][col];
-        cell.addEventListener('click', handleCellClick);
         board.appendChild(cell);
       }
     }
   }
 
   function handleCellClick(event) {
-    const { row, col } = event.target.dataset;
+    const { col } = event.target.dataset;
 
-    if (boardState[row][col] === '' && currentPlayer === player2) {
-      boardState[row][col] = 'X';
-      currentPlayer = player1;
-      renderBoard();
-      checkWinner();
-      if (currentPlayer === player1) {
-        setTimeout(() => {
-          makeMoveArka();
-          renderBoard();
-          checkWinner();
-          currentPlayer = player2;
-        }, 500);
+    for (let row = 6; row >= 0; row--) {
+      if (boardState[row][col] === '') {
+        boardState[row][col] = 'X';
+        renderBoard();
+        if (checkWinner(row, col)) {
+          playerWins++;
+          updateScores();
+          updateLeaderboard();
+          showWinner(currentPlayer);
+        } else {
+          currentPlayer = 'Arka';
+          setTimeout(() => {
+            makeMoveArka();
+            renderBoard();
+            if (checkWinner()) {
+              arkaWins++;
+              updateScores();
+              updateLeaderboard();
+              showWinner('Arka');
+            } else {
+              currentPlayer = playerNameInput.value.trim();
+              displayCurrentPlayer();
+            }
+          }, 500);
+        }
+        return;
       }
     }
   }
 
   function makeMoveArka() {
-    // Improved AI: Arka makes a move to block or win if possible
-    for (let i = 0; i < 6; i++) {
-      for (let j = 0; j < 6; j++) {
-        if (boardState[i][j] === '') {
-          // Check if Arka can win in the next move
-          boardState[i][j] = 'O';
-          if (checkWinner()) {
-            return;
-          }
-          // Check if Arka needs to block the player from winning
-          boardState[i][j] = 'X';
-          if (checkWinner()) {
-            boardState[i][j] = 'O';
-            return;
-          }
-          // Reset the cell
-          boardState[i][j] = '';
-        }
-      }
-    }
-
-    // Simple AI: If no winning or blocking move, Arka makes a random move
-    const emptyCells = [];
-    for (let row = 0; row < 6; row++) {
-      for (let col = 0; col < 6; col++) {
+    for (let col = 0; col < 7; col++) {
+      for (let row = 6; row >= 0; row--) {
         if (boardState[row][col] === '') {
-          emptyCells.push({ row, col });
+          boardState[row][col] = 'O';
+          return;
         }
       }
     }
-
-    if (emptyCells.length > 0) {
-      const randomIndex = Math.floor(Math.random() * emptyCells.length);
-      const { row, col } = emptyCells[randomIndex];
-      boardState[row][col] = 'O';
-    }
   }
 
-  function checkWinner() {
-    // Same as before with some enhancements
+  function checkWinner(row, col) {
+    return (
+      checkLine(row, col, 0, 1) || // Check horizontally
+      checkLine(row, col, 1, 0) || // Check vertically
+      checkLine(row, col, 1, 1) || // Check diagonally /
+      checkLine(row, col, 1, -1)   // Check diagonally \
+    );
+  }
 
-    // Update the scores
-    if (statusMessage.textContent.includes('wins')) {
-      if (statusMessage.textContent.includes(player2)) {
-        playerScore++;
+  function checkLine(row, col, rowIncrement, colIncrement) {
+    const playerSymbol = boardState[row][col];
+
+    for (let i = -3; i <= 3; i++) {
+      const newRow = row + i * rowIncrement;
+      const newCol = col + i * colIncrement;
+
+      if (
+        newRow >= 0 && newRow < 7 &&
+        newCol >= 0 && newCol < 7 &&
+        boardState[newRow][newCol] === playerSymbol
+      ) {
+        if (i === 3 || i === -3) {
+          highlightWinningCells(row, col, rowIncrement, colIncrement);
+          return true;
+        }
       } else {
-        arkaScore++;
+        break;
       }
-      updateScores();
     }
+
+    return false;
   }
 
-  function updateScores() {
-    playerScoreDisplay.textContent = `Your Score: ${playerScore}`;
-    arkaScoreDisplay.textContent = `Arka's Score: ${arkaScore}`;
-  }
+  function highlightWinningCells(row, col, rowIncrement, colIncrement) {
+    const winningCells = [];
 
-  function checkLine(line) {
-    // Same as before with some enhancements
+    for (let i = -3; i <= 3; i++) {
+      const newRow = row + i * rowIncrement;
+      const newCol = col + i * colIncrement;
+
+      if (
+        newRow >= 0 && newRow < 7 &&
+        newCol >= 0 && newCol < 7
+      ) {
+        winningCells.push({ row: newRow, col: newCol });
+      }
+    }
+
+    showWinner(currentPlayer, winningCells);
   }
 
   function showWinner(winner, winningCells) {
-    // Same as before with some enhancements
+    statusMessage.textContent = winner === 'Arka' ? 'Arka wins!' : `${currentPlayer} wins!`;
 
-    // Highlight the winning combination
     if (winningCells) {
       winningCells.forEach(cell => {
         const { row, col } = cell;
@@ -124,27 +169,13 @@ document.addEventListener('DOMContentLoaded', () => {
     board.removeEventListener('click', handleCellClick);
   }
 
+  function updateScores() {
+    playerScoreDisplay.textContent = `${currentPlayer}'s Score: ${playerScore} (${playerWins} Wins)`;
+    arkaScoreDisplay.textContent = `Arka's Score: ${arkaScore} (${arkaWins} Wins)`;
+  }
+
   function displayCurrentPlayer() {
-    statusMessage.textContent = `Your Turn`;
+    statusMessage.textContent = `Current Player: ${currentPlayer}`;
   }
 
-  function resetGame() {
-    currentPlayer = player2;
-    boardState.forEach(row => row.fill(''));
-    renderBoard();
-    displayCurrentPlayer();
-    board.addEventListener('click', handleCellClick);
-  }
-
-  // Add a reset button
-  const resetButton = document.createElement('button');
-  resetButton.textContent = 'Reset Game';
-  resetButton.addEventListener('click', resetGame);
-  document.body.insertBefore(resetButton, document.querySelector('script'));
-
-  // Initialize the game
-  resetGame();
-});
-
-   
-    
+  function updateLeader
