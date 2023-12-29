@@ -178,4 +178,4 @@ document.addEventListener('DOMContentLoaded', () => {
     statusMessage.textContent = `Current Player: ${currentPlayer}`;
   }
 
-  function updateLeader
+   function updateLeader
