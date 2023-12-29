@@ -6,7 +6,9 @@ body {
   justify-content: center;
   height: 100vh;
   background-color: #0d1117;
+  animation: fadeIn 1s ease-in-out; /* Add a fade-in animation */
 }
+
 
 .game-container {
   text-align: center;
@@ -44,6 +46,20 @@ body {
 .leaderboard {
   margin-top: 20px;
 }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.game-container {
+  text-align: center;
+}
+
+/* Rest of your styling... */
 
 .leaderboard-item {
   margin-bottom: 10px;
