@@ -4,6 +4,7 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
+  background-color: #0d1117;
 }
 
 .board {
@@ -22,7 +23,7 @@ body {
   justify-content: center;
   font-size: 18px;
   cursor: pointer;
-}
+ }
 
 .cell:hover {
   background-color: #0d1117;
