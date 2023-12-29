@@ -3,31 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    .rating {
-      display: flex;
-      justify-content: center;
-      margin: 20px;
-    }
-
-    .rating input {
-      display: none;
-    }
-
-    .rating label {
-      cursor: pointer;
-      font-size: 24px;
-      color: #ccc;
-    }
-
-    .rating label:before {
-      content: '\2605'; /* Unicode character for a star */
-    }
-
-    .rating input:checked ~ label {
-      color: #ffcc00;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
+  
+  
 </head>
 <body>
 
@@ -37,20 +15,12 @@
     <input type="radio" id="star3" name="rating" value="3" /><label for="star3"></label>
     <input type="radio" id="star2" name="rating" value="2" /><label for="star2"></label>
     <input type="radio" id="star1" name="rating" value="1" /><label for="star1"></label>
+    
   </div>
 
-  <script>
-    const ratingInputs = document.querySelectorAll('.rating input');
-    let selectedRating = 0;
-
-    ratingInputs.forEach(input => {
-      input.addEventListener('change', () => {
-        selectedRating = input.value;
-        console.log('Selected Rating:', selectedRating);
-        // You can use the selectedRating variable for further processing
-      });
-    });
-  </script>
+   </div>
+    <p id="selectedRating">Selected Rating: 0 stars</p>
+    <script src="script.js"></script>
 
 </body>
 </html>
