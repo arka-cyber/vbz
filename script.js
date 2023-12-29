@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
     return null;
   }
 
+  function isBoardFull() {
+    return !gameBoard.includes('');
+  }
+
   function handleClick(index) {
     if (!gameActive || gameBoard[index] !== '') {
       return;
@@ -34,15 +38,96 @@ document.addEventListener('DOMContentLoaded', function () {
     if (winner) {
       alert(`Player ${winner} wins!`);
       gameActive = false;
-    } else if (!gameBoard.includes('')) {
+    } else if (isBoardFull()) {
       alert('It\'s a draw!');
       gameActive = false;
     } else {
       currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      if (currentPlayer === 'O') {
+        // Arka's turn
+        setTimeout(() => {
+          makeArkaMove();
+        }, 500);
+      }
     }
+  }
+
+  function makeArkaMove() {
+    // Use the minimax algorithm for Arka's move
+    const bestMove = minimax(gameBoard, 'O').index;
+    gameBoard[bestMove] = 'O';
+    cells[bestMove].innerText = 'O';
+
+    const winner = checkWinner();
+    if (winner) {
+      alert(`Player ${winner} wins!`);
+      gameActive = false;
+    } else if (isBoardFull()) {
+      alert('It\'s a draw!');
+      gameActive = false;
+    } else {
+      currentPlayer = 'X';
+    }
+  }
+
+  function minimax(newBoard, player) {
+    const emptyCells = newBoard.reduce((acc, value, index) => {
+      if (value === '') {
+        acc.push(index);
+      }
+      return acc;
+    }, []);
+
+    if (checkWinner(newBoard) === 'X') {
+      return { score: -1 };
+    } else if (checkWinner(newBoard) === 'O') {
+      return { score: 1 };
+    } else if (emptyCells.length === 0) {
+      return { score: 0 };
+    }
+
+    const moves = [];
+    for (const emptyCell of emptyCells) {
+      const move = {};
+      move.index = emptyCell;
+      newBoard[emptyCell] = player;
+
+      if (player === 'O') {
+        const result = minimax(newBoard, 'X');
+        move.score = result.score;
+      } else {
+        const result = minimax(newBoard, 'O');
+        move.score = result.score;
+      }
+
+      newBoard[emptyCell] = '';
+      moves.push(move);
+    }
+
+    let bestMove;
+    if (player === 'O') {
+      let bestScore = -Infinity;
+      for (const move of moves) {
+        if (move.score > bestScore) {
+          bestScore = move.score;
+          bestMove = move;
+        }
+      }
+    } else {
+      let bestScore = Infinity;
+      for (const move of moves) {
+        if (move.score < bestScore) {
+          bestScore = move.score;
+          bestMove = move;
+        }
+      }
+    }
+
+    return bestMove;
   }
 
   cells.forEach((cell, index) => {
     cell.addEventListener('click', () => handleClick(index));
   });
 });
+
