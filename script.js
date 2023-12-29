@@ -1,86 +1,121 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const board = document.getElementById('board');
-  const cells = document.querySelectorAll('.cell');
-  const gridSize = 6;
-  let currentPlayer = 'Arka'; // Arka is the first player (robot)
-  let gameBoard = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => ''));
-   let gameActive = true;
+document.addEventListener('DOMContentLoaded', () => {
+  const board = document.getElementById('game-board');
+  const statusMessage = document.getElementById('status-message');
 
-  function checkWinner() {
-    // Implementing winning combinations for a 6x6 board is similar to the 3x3 case
-    // You can modify this based on your preferences
-    // ...
+  const player1 = 'Arka';
+  const player2 = 'You';
+  let currentPlayer = player2;
 
-    // For simplicity, let's assume no winner for now
-    return null;
+  const boardState = Array(6).fill().map(() => Array(6).fill(''));
+
+  function renderBoard() {
+    board.innerHTML = '';
+
+    for (let row = 0; row < 6; row++) {
+      for (let col = 0; col < 6; col++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.dataset.row = row;
+        cell.dataset.col = col;
+        cell.textContent = boardState[row][col];
+        cell.addEventListener('click', handleCellClick);
+        board.appendChild(cell);
+      }
+    }
   }
 
-  function isBoardFull() {
-    for (let i = 0; i < gridSize; i++) {
-      for (let j = 0; j < gridSize; j++) {
-        if (gameBoard[i][j] === '') {
-          return false;
+  function handleCellClick(event) {
+    const { row, col } = event.target.dataset;
+
+    if (boardState[row][col] === '' && currentPlayer === player2) {
+      boardState[row][col] = 'X';
+      currentPlayer = player1;
+      renderBoard();
+      checkWinner();
+      if (currentPlayer === player1) {
+        setTimeout(() => {
+          makeMoveArka();
+          renderBoard();
+          checkWinner();
+          currentPlayer = player2;
+        }, 500);
+      }
+    }
+  }
+
+  function makeMoveArka() {
+    // Simple AI: Arka makes a random move
+    const emptyCells = [];
+    for (let row = 0; row < 6; row++) {
+      for (let col = 0; col < 6; col++) {
+        if (boardState[row][col] === '') {
+          emptyCells.push({ row, col });
         }
       }
     }
-    return true;
-  }
 
-  function handleRobotMove() {
-    if (!gameActive) {
-      return;
-    }
-
-    // Simple random move for the robot (Arka)
-    let randomRow, randomCol;
-    do {
-      randomRow = Math.floor(Math.random() * gridSize);
-      randomCol = Math.floor(Math.random() * gridSize);
-    } while (gameBoard[randomRow][randomCol] !== '');
-
-    gameBoard[randomRow][randomCol] = 'O';
-    cells[randomRow * gridSize + randomCol].innerText = 'O';
-
-    const winner = checkWinner();
-    if (winner) {
-      alert(`${currentPlayer} wins!`);
-      gameActive = false;
-    } else if (isBoardFull()) {
-      alert('It\'s a draw!');
-      gameActive = false;
-    } else {
-      currentPlayer = 'User'; // Switch back to the user after Arka's move
+    if (emptyCells.length > 0) {
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+      const { row, col } = emptyCells[randomIndex];
+      boardState[row][col] = 'O';
     }
   }
 
-  function handleClick(row, col) {
-    if (!gameActive || gameBoard[row][col] !== '') {
+  function checkWinner() {
+    // Check rows, columns, and diagonals for a winner
+    for (let i = 0; i < 6; i++) {
+      if (checkLine(boardState[i])) {
+        showWinner(boardState[i][0]);
+        return;
+      }
+
+      const column = boardState.map(row => row[i]);
+      if (checkLine(column)) {
+        showWinner(column[0]);
+        return;
+      }
+    }
+
+    const diagonal1 = [boardState[0][0], boardState[1][1], boardState[2][2], boardState[3][3], boardState[4][4], boardState[5][5]];
+    const diagonal2 = [boardState[0][5], boardState[1][4], boardState[2][3], boardState[3][2], boardState[4][1], boardState[5][0]];
+
+    if (checkLine(diagonal1) || checkLine(diagonal2)) {
+      showWinner(diagonal1[0]);
       return;
     }
 
-    gameBoard[row][col] = 'X'; // User's move
-    cells[row * gridSize + col].innerText = 'X';
-
-    const winner = checkWinner();
-    if (winner) {
-      alert(`${currentPlayer} wins!`);
-      gameActive = false;
-    } else if (isBoardFull()) {
-      alert('It\'s a draw!');
-      gameActive = false;
-    } else {
-      currentPlayer = 'Arka'; // Switch to Arka after user's move
-      handleRobotMove(); // Arka's move
+    // Check for a tie
+    if (!boardState.flat().includes('')) {
+      showWinner('Tie');
+      return;
     }
-   }
 
-  cells.forEach((cell, index) => {
-    const row = Math.floor(index / gridSize);
-    const col = index % gridSize;
+    // Continue the game
+    displayCurrentPlayer();
+  }
 
-    cell.addEventListener('click', () => handleClick(row, col));
-  });
+  function checkLine(line) {
+    return line[0] !== '' && line.every(cell => cell === line[0]);
+  }
 
-  // Start the game with Arka's move
-  handleRobotMove();
+  function showWinner(winner) {
+    if (winner === 'Tie') {
+      statusMessage.textContent = 'It\'s a Tie!';
+    } else {
+      statusMessage.textContent = `${winner} wins!`;
+    }
+
+    board.removeEventListener('click', handleCellClick);
+  }
+
+  function displayCurrentPlayer() {
+    statusMessage.textContent = `Current Player: ${currentPlayer}`;
+  }
+
+  renderBoard();
+  displayCurrentPlayer();
 });
+
+  
+
+  
