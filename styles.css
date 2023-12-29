@@ -1,27 +1,31 @@
 
-    .rating {
-      display: flex;
-      justify-content: center;
-      margin: 20px;
-    }
+   body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
 
-    .rating input {
-      display: none;
-    }
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+}
 
-    .rating label {
-      cursor: pointer;
-      font-size: 24px;
-      color: #ccc;
-    }
+.rating input {
+    display: none;
+}
 
-    .rating label:before {
-      content: '\2605'; /* Unicode character for a star */
-    }
+.rating label {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    background-image: url('star-outline.png');
+    background-size: cover;
+}
 
-    .rating input:checked ~ label {
-      color: #ffcc00;
-    }
-
-
-
+.rating input:checked + label {
+    background-image: url('star-filled.png');
+}
