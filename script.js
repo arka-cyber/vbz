@@ -1,15 +1,9 @@
-function submitForm() {
-    // Add logic to handle form submission
-    alert('Form submitted successfully!');
-}
+document.addEventListener('DOMContentLoaded', function () {
+    const contactButton = document.getElementById('contactButton');
+    const contactForm = document.getElementById('contactForm');
 
-function connectWithFacebook() {
-    // Add logic to connect with Facebook
-    alert('Connecting with Facebook...');
-}
-
-function connectWithGmail() {
-    // Add logic to connect with Gmail
-    alert('Connecting with Gmail...');
-}
-
+    contactButton.addEventListener('click', function () {
+        contactForm.style.display = 'block';
+        contactButton.style.display = 'none';
+    });
+});
